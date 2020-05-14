@@ -1,1 +1,3 @@
-learning how to build rest api using flask
+# First REST-API
+
+- Using `Postman` to test the resources.
