@@ -1,5 +1,8 @@
 # First REST-API 
 ## Annotations 
+
+**Never press shift + del in your main repo before check if you have "pushed" your commits... >:)**
+
 * Using `Postman` to test the resources. 
 	* Headers, key and value must be: 
 		* Content-Type and application/json 
