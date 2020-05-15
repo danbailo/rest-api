@@ -2,12 +2,14 @@ from flask import Flask
 from flask_restful import Api
 from resources.hotel import Hotels, Hotel
 from resources.user import User, UserRegister, UserLogin
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+app.config['JWT_SECRET_KEY'] = 'DontTellAnyone' #only the application will know this string
 api = Api(app)
+jwt = JWTManager(app)
 
 @app.before_first_request
 def create_db():
