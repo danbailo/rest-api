@@ -29,68 +29,43 @@ class Hotels(Resource):
 		return {"hotels": hotels}
 
 class Hotel(Resource):
-	def get(self, hotel_id):
+
+	#get data from client
+	args = reqparse.RequestParser()
+	args.add_argument("name")
+	args.add_argument("stars")
+	args.add_argument("daily")
+	args.add_argument("city")
+
+	@staticmethod
+	def find_hotel(hotel_id):
 		for hotel in hotels:
 			if hotel["hotel_id"] == hotel_id:
 				return hotel
+		return None
+
+	def get(self, hotel_id):
+		hotel = Hotel.find_hotel(hotel_id)
+		if hotel:
+			return hotel
 		return {"message": "hotel not found!"}, 404 #error status code, not found
 	
 	def post(self, hotel_id): #creating a new hotel (register in website)
-		args = reqparse.RequestParser()
-		args.add_argument("name")
-		args.add_argument("stars")
-		args.add_argument("daily")
-		args.add_argument("city")
-
-		data = args.parse_args()
-
-		new_hotel = {
-			"hotel_id": hotel_id,
-			"name": data["name"],
-			"stars": data["stars"],
-			"daily": data["daily"],
-			"city": data["city"]
-		}
-
-		#like insert in database
+		data = Hotel.args.parse_args()
+		new_hotel = {"hotel_id": hotel_id, **data}
 		hotels.append(new_hotel) 
-
 		return new_hotel, 200 #sucess status code
 
 	def put(self, hotel_id):
-		NOT_IN = True
+		data = Hotel.args.parse_args()
+		new_hotel = {"hotel_id": hotel_id, **data}
 
-		args = reqparse.RequestParser()
-		args.add_argument("name")
-		args.add_argument("stars")
-		args.add_argument("daily")
-		args.add_argument("city")
-		
-		data = args.parse_args()
-
-		for hotel in hotels:
-			if hotel_id in hotel["hotel_id"]:
-				hotel["name"] = data["name"]
-				hotel["stars"] = data["stars"]
-				hotel["daily"] = data["daily"]
-				hotel["city"] = data["city"]
-				NOT_IN = False
-				return hotel, 200 #sucess status code	
-
-		if NOT_IN:
-			new_hotel = {
-				"hotel_id": hotel_id,
-				"name": data["name"],
-				"stars": data["stars"],
-				"daily": data["daily"],
-				"city": data["city"]
-			}
-
-			#like insert in database
-			hotels.append(new_hotel) 
-
-			return new_hotel, 200 #sucess status code			
-
+		hotel = Hotel.find_hotel(hotel_id)
+		if hotel:
+			hotel.update(new_hotel) #dict method to updated data
+			return new_hotel, 200
+		hotels.append(new_hotel) 
+		return new_hotel, 201 #created status code
 	
 	def delete(self, hotel_id):
 		pass		
