@@ -58,7 +58,39 @@ class Hotel(Resource):
 		return new_hotel, 200 #sucess status code
 
 	def put(self, hotel_id):
-		pass
+		NOT_IN = True
+
+		args = reqparse.RequestParser()
+		args.add_argument("name")
+		args.add_argument("stars")
+		args.add_argument("daily")
+		args.add_argument("city")
+		
+		data = args.parse_args()
+
+		for hotel in hotels:
+			if hotel_id in hotel["hotel_id"]:
+				hotel["name"] = data["name"]
+				hotel["stars"] = data["stars"]
+				hotel["daily"] = data["daily"]
+				hotel["city"] = data["city"]
+				NOT_IN = False
+				return hotel, 200 #sucess status code	
+
+		if NOT_IN:
+			new_hotel = {
+				"hotel_id": hotel_id,
+				"name": data["name"],
+				"stars": data["stars"],
+				"daily": data["daily"],
+				"city": data["city"]
+			}
+
+			#like insert in database
+			hotels.append(new_hotel) 
+
+			return new_hotel, 200 #sucess status code			
+
 	
 	def delete(self, hotel_id):
 		pass		
