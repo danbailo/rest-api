@@ -30,6 +30,7 @@ class UserRegister(Resource):
     # /register
     @staticmethod
     def post():
+        global args
         data = args.parse_args()
 
         if UserModel.find_by_login(data["login"]):
@@ -43,8 +44,10 @@ class UserLogin(Resource):
     # /login
     @staticmethod
     def post():
+        global args
         data = args.parse_args()
         user = UserModel.find_by_login(data["login"])
+        
         if user and safe_str_cmp(user.password, data["password"]):
             access_token = create_access_token(identity=user.user_id)
             return {"access_token": access_token}, 200
