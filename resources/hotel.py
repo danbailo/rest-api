@@ -40,7 +40,8 @@ class Hotels(Resource):
             "name": row[1],
             "stars": row[2],
             "daily": row[3],
-            "city": row[4]
+            "city": row[4],
+            "site_id": row[5],
 		} for row in result_set]
 
 		return {"hotels": hotels}
@@ -50,10 +51,11 @@ class Hotel(Resource):
 
 	#get data from client
 	args = reqparse.RequestParser()
-	args.add_argument("name")
+	args.add_argument("name", type=str, required=True, help="the field 'name' cant be left blank")
 	args.add_argument("stars")
 	args.add_argument("daily")
 	args.add_argument("city")
+	args.add_argument("site_id", type=int, required=True, help="every hotel needs to be linked a site")
 
 	#to access the get resource, the user not need be logged in the system.
 	@staticmethod
