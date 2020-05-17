@@ -11,7 +11,7 @@ def normalize_path_params(
 		max_daily=10000,
 		limits=50,
 		offset=0,
-		**data):
+		**kwargs):
 	if city:	
 		return {
 			"min_stars": min_stars,
@@ -48,8 +48,11 @@ class Hotels(Resource):
 	@staticmethod
 	def get():
 		global path_params
-		params = path_params.parse_args()
-		valid_params = {key:params[key] for key in params if params[key] is not None}
+		data = path_params.parse_args()
+		valid_data = {key:data[key] for key in data if data[key] is not None}
+		
+		params = normalize_path_params(**valid_data)
+
 		return {"hotels": [hotel.json() for hotel in HotelModel.query.all()]} # SELECT * FROM hoteis
 
 #provides resources for each hotel, that is, the info from determined hotel
