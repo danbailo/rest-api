@@ -3,6 +3,35 @@ from models.hotel import HotelModel
 from flask_jwt_extended import jwt_required
 import sqlite3
 
+def normalize_path_params(
+		city=None,
+		min_stars=0,
+		max_stars=5,
+		min_daily=0,
+		max_daily=10000,
+		limits=50,
+		offset=0,
+		**data):
+	if city:	
+		return {
+			"min_stars": min_stars,
+			"max_stars": max_stars,
+			"min_daily": min_daily,
+			"max_daily": max_daily,
+			"limits": limits,
+			"offset": offset
+		}
+	return { #**data
+		"city": city,
+		"min_stars": min_stars,
+		"max_stars": max_stars,
+		"min_daily": min_daily,
+		"max_daily": max_daily,
+		"limits": limits,
+		"offset": offset
+	}
+
+
 #/hotels?city=Rio de Janeiro&min_stars=4.5&max_daily=400
 
 path_params = reqparse.RequestParser()
@@ -18,6 +47,9 @@ path_params.add_argument("offset", type=int)
 class Hotels(Resource):
 	@staticmethod
 	def get():
+		global path_params
+		params = path_params.parse_args()
+		valid_params = {key:params[key] for key in params if params[key] is not None}
 		return {"hotels": [hotel.json() for hotel in HotelModel.query.all()]} # SELECT * FROM hoteis
 
 #provides resources for each hotel, that is, the info from determined hotel
