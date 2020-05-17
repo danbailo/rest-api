@@ -1,6 +1,18 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
 from flask_jwt_extended import jwt_required
+import sqlite3
+
+#/hotels?city=Rio de Janeiro&min_stars=4.5&max_daily=400
+
+path_params = reqparse.RequestParser()
+path_params.add_argument("city", type=str)
+path_params.add_argument("min_stars", type=float)
+path_params.add_argument("max_stars", type=float)
+path_params.add_argument("min_daily", type=float)
+path_params.add_argument("max_daily", type=float)
+path_params.add_argument("limits", type=int)
+path_params.add_argument("offset", type=int)
 
 #provides resources to all hotels, that is, the info of all hotels
 class Hotels(Resource):
