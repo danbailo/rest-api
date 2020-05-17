@@ -7,7 +7,7 @@ args.add_argument("url", type=str, required=True, help="The field 'url' cannot b
 class Sites(Resource):
 	@staticmethod
 	def get():
-		return {"sites": site.json() for site in SiteModel.query.all()}
+		return {"sites": [site.json() for site in SiteModel.query.all()]}
 
 class Site(Resource):
 	@staticmethod
