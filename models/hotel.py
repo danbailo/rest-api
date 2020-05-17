@@ -1,7 +1,7 @@
 from sql_alchemy import db
 
 class HotelModel(db.Model):
-    __tablename__ = 'hotels'
+    __tablename__ = "hotels"
 
     hotel_id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(64))
@@ -18,11 +18,11 @@ class HotelModel(db.Model):
 
     def json(self):
         return {
-            'hotel_id': self.hotel_id,
-            'name': self.name,
-            'stars': self.stars,
-            'daily': self.daily,
-            'city': self.city
+            "hotel_id": self.hotel_id,
+            "name": self.name,
+            "stars": self.stars,
+            "daily": self.daily,
+            "city": self.city
         }
 
     @classmethod

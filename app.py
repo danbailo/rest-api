@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, url_for
 from flask_restful import Api
 from resources.hotel import Hotels, Hotel
 from resources.user import User, UserRegister, UserLogin, UserLogout
@@ -24,6 +24,10 @@ def verify_blacklist(token):
 @jwt.revoked_token_loader
 def invalidated_access_token():
 	return jsonify({"message": "you have been logged out."}), 401 #unauthorized, if the client try access any resource after logged out.
+
+@app.route("/")
+def home():
+	return "hello"
 
 api.add_resource(Hotels, "/hotels")
 api.add_resource(Hotel, "/hotels/<string:hotel_id>")

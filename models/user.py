@@ -1,7 +1,7 @@
 from sql_alchemy import db
 
 class UserModel(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(32))
@@ -13,8 +13,8 @@ class UserModel(db.Model):
 
     def json(self):		
         return {
-			'user_id': self.user_id,
-			'login': self.login
+			"user_id": self.user_id,
+			"login": self.login
 		}
 
     @classmethod
