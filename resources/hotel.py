@@ -1,39 +1,11 @@
 from flask_restful import Resource, reqparse
-from models.hotel import HotelModel
 from flask_jwt_extended import jwt_required
+from models.hotel import HotelModel
+from resources.filters import normalize_path_params
+from resources.filters import query_off_city, query_on_city
 import sqlite3
 
-def normalize_path_params(
-		city=None,
-		min_stars=0,
-		max_stars=5,
-		min_daily=0,
-		max_daily=10000,
-		limit=50,
-		offset=0,
-		**kwargs):
-	if not city:	
-		return {
-			"min_stars": min_stars,
-			"max_stars": max_stars,
-			"min_daily": min_daily,
-			"max_daily": max_daily,
-			"limit": limit,
-			"offset": offset
-		}
-	return { #**data
-		"city": city,
-		"min_stars": min_stars,
-		"max_stars": max_stars,
-		"min_daily": min_daily,
-		"max_daily": max_daily,
-		"limit": limit,
-		"offset": offset
-	}
-
-
 #/hotels?city=Rio de Janeiro&min_stars=4.5&max_daily=400
-
 path_params = reqparse.RequestParser()
 path_params.add_argument("city", type=str)
 path_params.add_argument("min_stars", type=float)
@@ -56,25 +28,12 @@ class Hotels(Resource):
 		params = normalize_path_params(**valid_data)
 
 		if not params.get("city"):
-			query = """
-						SELECT * FROM hotels
-						WHERE (stars >= ? and stars <= ?)
-						and (daily >= ? and daily <= ?)
-						LIMIT ? OFFSET ?
-					"""
 			values = tuple(params.get(key) for key in params)
-			result_set = cursor.execute(query, values)
+			result_set = cursor.execute(query_off_city, values)
 		
 		else:
-			query = """
-						SELECT * FROM hotels
-						WHERE (city = ?)
-						and (stars >= ? and stars <= ?)
-						and (daily >= ? and daily <= ?)
-						LIMIT ? OFFSET ?
-					"""
 			values = tuple(params.get(key) for key in params)
-			result_set = cursor.execute(query, values)
+			result_set = cursor.execute(query_on_city, values)
 
 		hotels = [{
 			"hotel_id": row[0],
