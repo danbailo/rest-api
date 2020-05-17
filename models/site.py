@@ -3,7 +3,7 @@ from sql_alchemy import db
 class SiteModel(db.Model):
 	__tablename__ = "sites"
 
-	site_id = db.Column(db.String, primary_key=True)
+	site_id = db.Column(db.Integer, primary_key=True)
 	url = db.Column(db.String(64))
 	hotels = db.relationship("HotelModel") #return a list of Hotels obj
 

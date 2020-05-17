@@ -1,5 +1,8 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from models.site import SiteModel
+
+args = reqparse.RequestParser()
+args.add_argument("url", type=str, required=True, help="The field 'url' cannot be left blank.")
 
 class Sites(Resource):
 	@staticmethod
@@ -12,16 +15,17 @@ class Site(Resource):
 		site = SiteModel.find_site(url)
 		if site:
 			return site.json()
-		return {"message": f'site "{url}" not found!'}, 404 #not found
+		return {"message": f"site '{url}' not found!"}, 404 #not found
 
 	@staticmethod
 	def post(url):
 		if SiteModel.find_site(url):
-			return {"message": f'the site "{url}" already exists!'}, 400 #bad request
+			return {"message": f"the site '{url}' already exists!"}, 400 #bad request
 		site = SiteModel(url)
 		try:
 			site.save_site()
-		except:
+		except Exception as err:
+			print(err)
 			return {"message": "An error ocurred trying to create site."}, 500 #Internal Server Error
 		return site.json(), 201
 	
