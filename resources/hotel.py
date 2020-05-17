@@ -9,16 +9,16 @@ def normalize_path_params(
 		max_stars=5,
 		min_daily=0,
 		max_daily=10000,
-		limits=50,
+		limit=50,
 		offset=0,
 		**kwargs):
-	if city:	
+	if not city:	
 		return {
 			"min_stars": min_stars,
 			"max_stars": max_stars,
 			"min_daily": min_daily,
 			"max_daily": max_daily,
-			"limits": limits,
+			"limit": limit,
 			"offset": offset
 		}
 	return { #**data
@@ -27,7 +27,7 @@ def normalize_path_params(
 		"max_stars": max_stars,
 		"min_daily": min_daily,
 		"max_daily": max_daily,
-		"limits": limits,
+		"limit": limit,
 		"offset": offset
 	}
 
@@ -40,20 +40,51 @@ path_params.add_argument("min_stars", type=float)
 path_params.add_argument("max_stars", type=float)
 path_params.add_argument("min_daily", type=float)
 path_params.add_argument("max_daily", type=float)
-path_params.add_argument("limits", type=int)
+path_params.add_argument("limit", type=int)
 path_params.add_argument("offset", type=int)
 
 #provides resources to all hotels, that is, the info of all hotels
 class Hotels(Resource):
 	@staticmethod
 	def get():
+		conn = sqlite3.connect("database.db")
+		cursor = conn.cursor()
+
 		global path_params
 		data = path_params.parse_args()
 		valid_data = {key:data[key] for key in data if data[key] is not None}
-		
 		params = normalize_path_params(**valid_data)
 
-		return {"hotels": [hotel.json() for hotel in HotelModel.query.all()]} # SELECT * FROM hoteis
+		if not params.get("city"):
+			query = """
+						SELECT * FROM hotels
+						WHERE (stars >= ? and stars <= ?)
+						and (daily >= ? and daily <= ?)
+						LIMIT ? OFFSET ?
+					"""
+			values = tuple(params.get(key) for key in params)
+			result_set = cursor.execute(query, values)
+		
+		else:
+			query = """
+						SELECT * FROM hotels
+						WHERE (city = ?)
+						and (stars >= ? and stars <= ?)
+						and (daily >= ? and daily <= ?)
+						LIMIT ? OFFSET ?
+					"""
+			values = tuple(params.get(key) for key in params)
+			result_set = cursor.execute(query, values)
+
+		hotels = [{
+			"hotel_id": row[0],
+            "name": row[1],
+            "stars": row[2],
+            "daily": row[3],
+            "city": row[4]
+		} for row in result_set]
+
+		return {"hotels": hotels}
 
 #provides resources for each hotel, that is, the info from determined hotel
 class Hotel(Resource):
