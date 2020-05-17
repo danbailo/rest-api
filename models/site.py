@@ -5,9 +5,9 @@ class SiteModel(db.Model):
 
 	site_id = db.Column(db.String, primary_key=True)
 	url = db.Column(db.String(64))
-	hotels = db.relationship("HotelModel") #list of Hotels obj
+	hotels = db.relationship("HotelModel") #return a list of Hotels obj
 
-	def __init__(self, site_id):
+	def __init__(self, site_id, url):
 		self.url = url
 
 	def json(self):
