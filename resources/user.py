@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from werkzeug.security import safe_str_cmp, generate_password_hash, check_password_hash
+import datetime
 from blacklist import BLACKLIST
 
 args = reqparse.RequestParser()
@@ -49,7 +50,7 @@ class UserLogin(Resource):
         user = UserModel.find_by_login(data["login"])
         
         if user and safe_str_cmp(user.password, data["password"]):
-            access_token = create_access_token(identity=user.user_id)
+            access_token = create_access_token(identity=user.user_id, expires_delta=datetime.timedelta(seconds=3600))
             return {"access_token": access_token}, 200
         return {"message": "The username or password is incorrect."}, 401 # Unauthorized access
 
