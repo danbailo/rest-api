@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 from models.hotel import HotelModel
+from models.site import SiteModel
 from resources.filters import normalize_path_params
 from resources.filters import query_off_city, query_on_city
 import sqlite3
@@ -76,6 +77,9 @@ class Hotel(Resource):
 
 		data = Hotel.args.parse_args()
 		hotel = HotelModel(hotel_id, **data)
+
+		if not SiteModel.find_by_id(data.get("site_id")):
+			return {"message": "the hotel must be associated with a valid site"}, 400
 		try:
 			hotel.save_hotel()
 		except:
