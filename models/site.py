@@ -24,10 +24,19 @@ class SiteModel(db.Model):
 			return site
 		return None
 
+	@classmethod
+	def find_by_id(cls, site_id):
+		valid_id = cls.query.filter_by(site_id=site_id).first()
+		if valid_id:
+			return valid_id
+		return None		
+
 	def save_site(self):
 		db.session.add(self)
 		db.session.commit()
 
 	def delete_site(self):
+		#deleting all hotels that are association a this site
+		[hotel.delete_hotel() for hotel in self.hotels]
 		db.session.delete(self)
 		db.session.commit()
