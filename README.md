@@ -15,10 +15,10 @@ parameters will receive the default values.
 		* Default: 0
 	* max_stars &rarr; Maximum hotel ratings from 0 to 5. 
 		* Default: 5
-	* min_daily &rarr; Minimum daily rate from R $ 0 to R $ 10,000.00. 
+	* min_daily &rarr; Minimum daily value from 0 to 10000. 
 		* Default: 0
-	* max_daily &rarr; Maximum daily rate of the hotel from R $ 0 to R $ 10,000.00. 
-		* Standard: 10000
+	* max_daily &rarr; Maximum daily value from 0 to 10000. 
+		* Default: 10000
 	* limit &rarr; Maximum number of elements displayed per page. 
 		* Default: 50
 	* offset &rarr; Number of elements to skip (usually multiple of limit). 
