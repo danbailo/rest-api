@@ -6,6 +6,7 @@ class UserModel(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(32))
     password = db.Column(db.String(32))
+    confirmed = db.Column(db.Boolean, default=False)
 
     def __init__(self, login, password):
         self.login = login
@@ -14,7 +15,8 @@ class UserModel(db.Model):
     def json(self):		
         return {
 			"user_id": self.user_id,
-			"login": self.login
+			"login": self.login,
+			"confirmed": self.confirmed
 		}
 
     @classmethod

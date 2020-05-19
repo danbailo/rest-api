@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, redirect, url_for
 from flask_restful import Api
 from resources.hotel import Hotels, Hotel
-from resources.user import User, UserRegister, UserLogin, UserLogout
+from resources.user import User, UserRegister, UserLogin, UserLogout, UserConfirm
 from resources.site import Sites, Site
 from flask_jwt_extended import JWTManager
 from blacklist import BLACKLIST
@@ -34,6 +34,7 @@ api.add_resource(Hotels, "/hotels")
 api.add_resource(Hotel, "/hotels/<string:hotel_id>")
 api.add_resource(User, "/users/<int:user_id>")
 api.add_resource(UserRegister, "/register")
+api.add_resource(UserConfirm, "/confirm/<int:user_id>")
 api.add_resource(UserLogin, "/login")
 api.add_resource(UserLogout, "/logout")
 api.add_resource(Sites, "/sites")
