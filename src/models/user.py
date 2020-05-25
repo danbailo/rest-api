@@ -1,23 +1,63 @@
 from sql_alchemy import db
+from utils import get_credentials
+from flask import request, url_for
+from mailjet_rest import Client
+import requests
+
+credentials = get_credentials()
+api_key, api_secret = credentials
 
 class UserModel(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(32))
-    password = db.Column(db.String(32))
+    login = db.Column(db.String(32), nullable=False, unique=True)
+    password = db.Column(db.String(32), nullable=False)
+    email = db.Column(db.String(64), nullable=False, unique=True)
     confirmed = db.Column(db.Boolean, default=False)
 
-    def __init__(self, login, password):
+    def __init__(self, login, password, email):
         self.login = login
         self.password = password
+        self.email = email
 
     def json(self):		
         return {
 			"user_id": self.user_id,
 			"login": self.login,
+			"email": self.email,
 			"confirmed": self.confirmed
 		}
+
+    def send_confirmation_email(self):
+        #http://127.0.0.1:5000/confirm/{user_id}
+        mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+        link = request.url_root[:-1] + url_for("userconfirm", user_id=self.user_id)
+        data = \
+        {
+            "Messages":[
+                {
+                    "From":{
+                        "Email":"danbailoufms@gmail.com",
+                        "Name":"Daniel Bailo"
+                    },
+                    "To":[
+                        {
+                            "Email":f"{self.email}",
+                            "Name":"passenger 1"
+                        }
+                    ],
+                    "Subject":"no-reply",
+                    "TextPart":"Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
+                    "HTMLPart":f"""<p>
+                                    Click <a href="{link}">here</a> to active your account!
+                                </p>"""
+                }
+            ]
+        }
+        result = mailjet.send.create(data=data)
+        print(result.status_code)
+        print(result.json())
 
     @classmethod
     def find_user(cls, user_id):
@@ -32,6 +72,13 @@ class UserModel(db.Model):
         if user:
             return user
         return None
+
+    @classmethod
+    def find_by_email(cls, email):
+        user = cls.query.filter_by(email=email).first()
+        if user:
+            return user
+        return None        
 
     def save_user(self):
         db.session.add(self)

@@ -1,13 +1,16 @@
-from flask_restful import Resource, reqparse
-from models.user import UserModel
-from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from werkzeug.security import safe_str_cmp, generate_password_hash, check_password_hash
-import datetime
+from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
+from flask_restful import Resource, reqparse
+from flask import make_response, render_template
+from models.user import UserModel
 from blacklist import BLACKLIST
+import datetime
+import traceback
 
 args = reqparse.RequestParser()
 args.add_argument("login", type=str, required=True, help="The field 'login' cannot be left blank.")
 args.add_argument("password", type=str, required=True, help="The field 'password' cannot be left blank.")
+args.add_argument("email", type=str) #if i had left "required=True", all operations in user.py would need this field
 
 class User(Resource):
     # /users/{user_id}
@@ -36,12 +39,19 @@ class UserRegister(Resource):
     def post():
         global args
         data = args.parse_args()
+        if not data.get("email"):
+            return {"message": "insert a valid email!"}      
         if UserModel.find_by_login(data["login"]):
             return {"message": f"The login '{data['login']}' already exists."}
+        if UserModel.find_by_email(data["email"]):
+            return {"message": f"The email '{data['email']}' already exists."}            
         user = UserModel(**data)
         try:
             user.save_user()
+            user.send_confirmation_email()
         except:
+            user.delete_user()
+            traceback.print_exc()
             return {"message": "An error ocurred trying to create user."}, 500 #Internal Server Error
         return {"message": "User created successfully!"}, 201 # Created status code
 
@@ -82,4 +92,10 @@ class UserConfirm(Resource):
             user.save_user()
         except:
             return {"message": "An error ocurred trying to confirm user."}, 500 #Internal Server Error
-        return {"message": "user has been confirmed with success!"}, 200
+        # return {"message": "user has been confirmed with success!"}, 200
+        headers = {
+            "Content-Type": "text/html"
+        }
+        response = make_response(render_template("user_confirm.html", email=user.email, login=user.login), 200)
+        response.headers["Content-Type"] = "text/html"
+        return response
