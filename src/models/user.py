@@ -1,11 +1,10 @@
 from utils.sql_alchemy import db
-from utils.utils import get_credentials
+from utils.utils import CREDENTIALS
 from flask import request, url_for
 from mailjet_rest import Client
 
-credentials = get_credentials()
-api_key = credentials["api_key"]
-api_secret = credentials["api_secret"]
+api_key = CREDENTIALS["api_key"]
+api_secret = CREDENTIALS["api_secret"]
 
 class UserModel(db.Model):
     __tablename__ = "users"

@@ -4,11 +4,9 @@ from models.hotel import HotelModel
 from models.site import SiteModel
 from resources.filters import normalize_path_params
 from resources.filters import query_off_city, query_on_city
-from utils.utils import get_db_path
+from utils.utils import DATABASE
 import traceback
 import sqlite3
-
-DATABASE = get_db_path()
 
 #/hotels?city=Rio de Janeiro&min_stars=4.5&max_daily=400
 path_params = reqparse.RequestParser()
@@ -24,7 +22,7 @@ path_params.add_argument("offset", type=int)
 class Hotels(Resource):
 	@staticmethod
 	def get():
-		conn = sqlite3.connect(DATABASE["path"])
+		conn = sqlite3.connect(DATABASE['path'])
 		cursor = conn.cursor()
 
 		global path_params
