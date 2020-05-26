@@ -24,24 +24,19 @@ parameters will receive the default values.
 	* offset &rarr; Number of elements to skip (usually multiple of limit). 
 		* Default: 0
 
-<!-- table -->
-<!-- | **Method** | **URL** | **Authorization required**
-|:-----------|:--------|:--------------------------
-|`GET`		 |`/hotels`|NO		 -->
+**Method**: `GET`
 
 **URL**: `/hotels?city=Santos&min_stars=1.0&max_stars=3.0&max_daily=700&limits=10`
 
-**Method**: `GET`
-
 **Authorization required**: NO
 
-## Success Response
+## Response
 
 **Code** : `200 OK`
 
-**Content example**
+**Response Body**
 
-As an answer, get a list of hotels that fit the requisition filters above:
+As response, is obtained a list of hotels that fit the requisition filters above:
 
 ```json
 {
@@ -74,23 +69,25 @@ As an answer, get a list of hotels that fit the requisition filters above:
 }
 ```
 
+---
+
 ## Request
 
 Request to view data for a specific hotel. A GET is made of `/hotels/{hotel_id}`
 
-**URL**: `/hotels/bravo`
-
 **Method**: `GET`
+
+**URL**: `/hotels/bravo`
 
 **Authorization required**: NO
 
-## Success Response
+## Response
 
 **Code** : `200 OK`
 
-**Content example**
+**Response Body**
 
-As an answer, get a list of hotels that fit the requisition filters above:
+As response, is obtained a JSON with the data of requested hotel:
 
 ```json
 {
@@ -103,62 +100,178 @@ As an answer, get a list of hotels that fit the requisition filters above:
 }
 ```
 
-TODO
+---
 
-# TEMPLATE EXAMPLE
+## Request
 
-# Login
+Request of a hotel that not exists
 
-Used to collect a Token for a registered User.
+**Method**: `GET`
 
-**URL** : `/api/login/`
+**URL**: `/hotels/not_exists`
 
-**Method** : `POST`
+**Authorization required**: NO
 
-**Auth required** : NO
+## Response
 
-**Data constraints**
+**Code** : `404 Not Found`
 
-```json
-{
-    "username": "[valid email address]",
-    "password": "[password in plain text]"
-}
-```
+**Response Body**
 
-**Data example**
+As response, a message is obtained saying that the hotel was not found:
 
 ```json
 {
-    "username": "iloveauth@example.com",
-    "password": "abcd1234"
+  "message": "hotel 'not_exists' not found."
 }
 ```
 
-## Success Response
+# 2. User Registration
 
-**Code** : `200 OK`
+## Request
 
-**Content example**
+Example request to register a new user.
 
+**Method**: `POST`
+
+**URL**: `/register`
+
+**Authorization required**: NO
+
+**Header**: `Content-type`
+
+**Authorization required**: `application/json`
+
+**Request Body**:
 ```json
 {
-    "token": "93144b288eb1fdccbe46d6fc0f241a51766ecd3d"
+  "login": "daniel",
+  "password": "123",
+  "email": "daniel@email.com"
 }
 ```
 
-## Error Response
+## Response
 
-**Condition** : If 'username' and 'password' combination is wrong.
+As response, you get a success message that the user was created and an message is sent to your email for you active this account.
 
-**Code** : `400 BAD REQUEST`
+**Code** : `201 Created`
 
-**Content** :
-
+**Response Body**:
 ```json
 {
-    "non_field_errors": [
-        "Unable to login with provided credentials."
-    ]
+  "message": "user 'danbailo' has been created successfully!"
 }
 ```
+
+---
+
+## Request
+
+Example request to register a new user with same login.
+
+**Method**: `POST`
+
+**URL**: `/register`
+
+**Authorization required**: NO
+
+**Header**: `Content-type`
+
+**Authorization required**: `application/json`
+
+**Request Body**:
+```json
+{
+  "login": "daniel",
+  "password": "123",
+  "email": "other_email@email.com"
+}
+```
+
+## Response
+
+As response, you get a message saying that the login already exists.
+
+**Code** : `404 Bad Request`
+
+**Response Body**:
+```json
+{
+  "message": "The login 'daniel' already exists."
+}
+```
+
+---
+
+## Request
+
+Example request to register a new user with same email.
+
+**Method**: `POST`
+
+**URL**: `/register`
+
+**Authorization required**: NO
+
+**Header**: `Content-type`
+
+**Authorization required**: `application/json`
+
+**Request Body**:
+```json
+{
+  "login": "daniel",
+  "password": "123",
+  "email": "other_email@email.com"
+}
+```
+
+## Response
+
+As response, you get a message saying that the login already exists.
+
+**Code** : `404 Bad Request`
+
+**Response Body**:
+```json
+## Request
+
+Example request to register a new user with same login.
+
+**Method**: `POST`
+
+**URL**: `/register`
+
+**Authorization required**: NO
+
+**Header**: `Content-type`
+
+**Authorization required**: `application/json`
+
+**Request Body**:
+```json
+{
+  "login": "daniel",
+  "password": "123",
+  "email": "other_email@email.com"
+}
+```
+
+## Response
+
+As response, you get a message saying that the email already exists.
+
+**Code** : `404 Bad Request`
+
+**Response Body**:
+```json
+{
+  "message": "The email 'daniel@email.com' already exists."
+}
+```
+---
+
+# 3. User Login
+
+DOING...
