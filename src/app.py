@@ -27,10 +27,6 @@ def verify_blacklist(token):
 def invalidated_access_token():
 	return jsonify({"message": "you have been logged out."}), 401 #unauthorized, if the client try access any resource after logged out.
 
-@app.route("/")
-def home():
-	return "hello"
-
 api.add_resource(Hotels, "/hotels")
 api.add_resource(Hotel, "/hotels/<string:hotel_id>")
 api.add_resource(User, "/users/<int:user_id>")
