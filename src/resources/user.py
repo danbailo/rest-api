@@ -2,7 +2,7 @@ from werkzeug.security import safe_str_cmp, generate_password_hash, check_passwo
 from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from flask_restful import Resource, reqparse
 from models.user import UserModel
-from blacklist import BLACKLIST
+from utils.blacklist import BLACKLIST
 import datetime
 import traceback
 
@@ -63,11 +63,11 @@ class UserLogin(Resource):
         data = args.parse_args()
         user = UserModel.find_by_login(data["login"])
         if not user.confirmed:
-            return {"message": f"The user {user.login} is not confirmed."}, 401 # Unauthorized access
+            return {"message": f"user '{user.login}' is not confirmed."}, 401 # Unauthorized access
         if user and safe_str_cmp(user.password, data["password"]):
             access_token = create_access_token(identity=user.user_id, expires_delta=datetime.timedelta(seconds=3600))
             return {"access_token": access_token}, 200
-        return {"message": "The username or password is incorrect."}, 401 # Unauthorized access
+        return {"message": "username or password is incorrect."}, 401 # Unauthorized access
 
 class UserLogout(Resource):
     # /logout
@@ -84,7 +84,7 @@ class UserConfirm(Resource):
     def get(cls, user_id):
         user = UserModel.find_user(user_id)
         if not user:
-            return {"message": "user not found."}, 404
+            return {"message": f"user '{user.user_id}' not found."}, 404
         if user.confirmed:
             return {"message": f"user '{user.user_id}' has already been activated!"}, 200
         user.confirmed = True
@@ -93,4 +93,4 @@ class UserConfirm(Resource):
         except:
             traceback.print_exc()
             return {"message": "An error ocurred trying to confirm user."}, 500 #Internal Server Error
-        return {"message": f"your user {user.login} has been confirmed with success!"}, 200
+        return {"message": f"user '{user.login}' has been confirmed with success!"}, 200
