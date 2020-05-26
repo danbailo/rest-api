@@ -53,7 +53,7 @@ class UserRegister(Resource):
             user.delete_user()
             traceback.print_exc()
             return {"message": "An error ocurred trying to create user."}, 500 #Internal Server Error
-        return {"message": f"user {user.login} has been created successfully!"}, 201 # Created status code
+        return {"message": f"user '{user.login}' has been created successfully!"}, 201 # Created status code
 
 class UserLogin(Resource):
     # /login
@@ -84,7 +84,7 @@ class UserConfirm(Resource):
     def get(cls, user_id):
         user = UserModel.find_user(user_id)
         if not user:
-            return {"message": f"user '{user.user_id}' not found."}, 404
+            return {"message": f"user '{user_id}' not found."}, 404
         if user.confirmed:
             return {"message": f"user '{user.user_id}' has already been activated!"}, 200
         user.confirmed = True
