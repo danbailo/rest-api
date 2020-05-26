@@ -1,5 +1,5 @@
-from sql_alchemy import db
-from utils import get_credentials
+from utils.sql_alchemy import db
+from utils.utils import get_credentials
 from flask import request, url_for
 from mailjet_rest import Client
 

@@ -1,4 +1,4 @@
-from sql_alchemy import db
+from utils.sql_alchemy import db
 
 class HotelModel(db.Model):
     __tablename__ = "hotels"

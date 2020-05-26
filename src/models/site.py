@@ -1,4 +1,4 @@
-from sql_alchemy import db
+from utils.sql_alchemy import db
 
 class SiteModel(db.Model):
 	__tablename__ = "sites"
