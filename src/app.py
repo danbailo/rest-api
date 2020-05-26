@@ -4,10 +4,11 @@ from resources.hotel import Hotels, Hotel
 from resources.user import User, UserRegister, UserLogin, UserLogout, UserConfirm
 from resources.site import Sites, Site
 from flask_jwt_extended import JWTManager
-from blacklist import BLACKLIST
+from utils.blacklist import BLACKLIST
+from utils.utils import DATABASE
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE['path']}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = "DontTellAnyone" #only the application will know this string
 app.config["JWT_BLACKLIST_ENABLED"] = True
@@ -42,6 +43,6 @@ api.add_resource(Site, "/sites/<string:url>")
 
 
 if __name__ == "__main__":
-	from sql_alchemy import db
+	from utils.sql_alchemy import db
 	db.init_app(app)
 	app.run(debug=True) #while i'm programming, set this flag to True. After deployied, set to false.
