@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.site import SiteModel
+import traceback
 
 args = reqparse.RequestParser()
 args.add_argument("url", type=str, required=True, help="The field 'url' cannot be left blank.")
@@ -24,8 +25,8 @@ class Site(Resource):
 		site = SiteModel(url)
 		try:
 			site.save_site()
-		except Exception as err:
-			print(err)
+		except:
+			traceback.print_exc()
 			return {"message": "An error ocurred trying to create site."}, 500 #Internal Server Error
 		return site.json(), 201
 	

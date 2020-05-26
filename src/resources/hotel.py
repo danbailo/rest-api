@@ -4,6 +4,7 @@ from models.hotel import HotelModel
 from models.site import SiteModel
 from resources.filters import normalize_path_params
 from resources.filters import query_off_city, query_on_city
+import traceback
 import sqlite3
 
 #/hotels?city=Rio de Janeiro&min_stars=4.5&max_daily=400
@@ -83,6 +84,7 @@ class Hotel(Resource):
 		try:
 			hotel.save_hotel()
 		except:
+			traceback.print_exc()
 			return {"message": "An error ocurred trying to create hotel."}, 500 #Internal Server Error
 		return hotel.json(), 201
 	
@@ -96,12 +98,14 @@ class Hotel(Resource):
 			try:
 				hotel.save_hotel()
 			except:
+				traceback.print_exc()
 				return {"message": "An error ocurred trying to create hotel."}, 500 #Internal Server Error
 			return hotel.json(), 200
 		hotel_object = HotelModel(hotel_id, **data)
 		try:
 			hotel.save_hotel()
 		except:
+			traceback.print_exc()
 			return {"message": "An error ocurred trying to create hotel."}, 500 #Internal Server Error
 		return hotel_object.json(), 201#created status code
 	
@@ -113,6 +117,7 @@ class Hotel(Resource):
 			try:
 				hotel.delete_hotel()
 			except:
+				traceback.print_exc()
 				return {"message": "An error ocurred trying to create hotel."}, 500 #Internal Server Error			
 			return {"message": f"hotel '{hotel_id}' deleted."}
 		return {"message": f"hotel '{hotel_id}' not found."}, 404

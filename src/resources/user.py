@@ -1,7 +1,6 @@
 from werkzeug.security import safe_str_cmp, generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from flask_restful import Resource, reqparse
-from flask import make_response, render_template
 from models.user import UserModel
 from blacklist import BLACKLIST
 import datetime
@@ -29,9 +28,10 @@ class User(Resource):
             try:
                 user.delete_user()
             except:
+                traceback.print_exc()
                 return {"message": "An error ocurred trying to delete user."}, 500 #Internal Server Error
-            return {"message": "User deleted."}
-        return {"message": "User not found."}, 404
+            return {"message": f"user {user.login} deleted with successfully!"}
+        return {"message": f"user {user.login} not found!"}, 404
 
 class UserRegister(Resource):
     # /register
@@ -53,7 +53,7 @@ class UserRegister(Resource):
             user.delete_user()
             traceback.print_exc()
             return {"message": "An error ocurred trying to create user."}, 500 #Internal Server Error
-        return {"message": "User created successfully!"}, 201 # Created status code
+        return {"message": f"user {user.login} has been created successfully!"}, 201 # Created status code
 
 class UserLogin(Resource):
     # /login
@@ -63,7 +63,7 @@ class UserLogin(Resource):
         data = args.parse_args()
         user = UserModel.find_by_login(data["login"])
         if not user.confirmed:
-            return {"message": "The user is not confirmed."}, 401 # Unauthorized access
+            return {"message": f"The user {user.login} is not confirmed."}, 401 # Unauthorized access
         if user and safe_str_cmp(user.password, data["password"]):
             access_token = create_access_token(identity=user.user_id, expires_delta=datetime.timedelta(seconds=3600))
             return {"access_token": access_token}, 200
@@ -91,11 +91,6 @@ class UserConfirm(Resource):
         try:
             user.save_user()
         except:
+            traceback.print_exc()
             return {"message": "An error ocurred trying to confirm user."}, 500 #Internal Server Error
-        # return {"message": "user has been confirmed with success!"}, 200
-        headers = {
-            "Content-Type": "text/html"
-        }
-        response = make_response(render_template("user_confirm.html", email=user.email, login=user.login), 200)
-        response.headers["Content-Type"] = "text/html"
-        return response
+        return {"message": f"your user {user.login} has been confirmed with success!"}, 200
