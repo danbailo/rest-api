@@ -136,11 +136,8 @@ Example request to register a new user.
 
 **URL**: `/register`
 
-**Authorization required**: NO
-
-**Header**: `Content-type`
-
-**Authorization required**: `application/json`
+**Request Header**
+  * `Content-type`: `application/json`
 
 **Request Body**:
 ```json
@@ -174,11 +171,8 @@ Example request to register a new user with same login.
 
 **URL**: `/register`
 
-**Authorization required**: NO
-
-**Header**: `Content-type`
-
-**Authorization required**: `application/json`
+**Request Header**
+  * `Content-type`: `application/json`
 
 **Request Body**:
 ```json
@@ -212,42 +206,8 @@ Example request to register a new user with same email.
 
 **URL**: `/register`
 
-**Authorization required**: NO
-
-**Header**: `Content-type`
-
-**Authorization required**: `application/json`
-
-**Request Body**:
-```json
-{
-  "login": "daniel",
-  "password": "123",
-  "email": "other_email@email.com"
-}
-```
-
-## Response
-
-As response, you get a message saying that the login already exists.
-
-**Code** : `404 Bad Request`
-
-**Response Body**:
-```json
-## Request
-
-Example request to register a new user with same login.
-
-**Method**: `POST`
-
-**URL**: `/register`
-
-**Authorization required**: NO
-
-**Header**: `Content-type`
-
-**Authorization required**: `application/json`
+**Request Header**
+  * `Content-type`: `application/json`
 
 **Request Body**:
 ```json
