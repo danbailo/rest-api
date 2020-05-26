@@ -2,10 +2,10 @@ from sql_alchemy import db
 from utils import get_credentials
 from flask import request, url_for
 from mailjet_rest import Client
-import requests
 
 credentials = get_credentials()
-api_key, api_secret = credentials
+api_key = credentials["api_key"]
+api_secret = credentials["api_secret"]
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -47,17 +47,14 @@ class UserModel(db.Model):
                             "Name":"passenger 1"
                         }
                     ],
-                    "Subject":"no-reply",
-                    "TextPart":"Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
+                    "Subject":"Account Email Verification - Action Required",
                     "HTMLPart":f"""<p>
                                     Click <a href="{link}">here</a> to active your account!
                                 </p>"""
                 }
             ]
         }
-        result = mailjet.send.create(data=data)
-        print(result.status_code)
-        print(result.json())
+        mailjet.send.create(data=data)
 
     @classmethod
     def find_user(cls, user_id):
