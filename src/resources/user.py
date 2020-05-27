@@ -62,6 +62,8 @@ class UserLogin(Resource):
         global args
         data = args.parse_args()
         user = UserModel.find_by_login(data["login"])
+        if not user:
+            return {"message": f"user '{data['login']}' not found."}, 404        
         if not user.confirmed:
             return {"message": f"user '{user.login}' is not confirmed."}, 401 # Unauthorized access
         if user and safe_str_cmp(user.password, data["password"]):

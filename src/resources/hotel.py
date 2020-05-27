@@ -4,7 +4,7 @@ from models.hotel import HotelModel
 from models.site import SiteModel
 from resources.filters import normalize_path_params
 from resources.filters import query_off_city, query_on_city
-from utils.utils import PATH, DATABASE
+from utils.config import PATH, DATABASE
 import traceback
 import sqlite3
 

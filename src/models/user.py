@@ -1,5 +1,5 @@
 from utils.sql_alchemy import db
-from utils.utils import API_KEY, API_SECRET
+from utils.config import API_KEY, API_SECRET
 from flask import request, url_for
 from mailjet_rest import Client
 
