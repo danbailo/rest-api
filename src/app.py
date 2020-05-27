@@ -5,12 +5,12 @@ from resources.user import User, UserRegister, UserLogin, UserLogout, UserConfir
 from resources.site import Sites, Site
 from flask_jwt_extended import JWTManager
 from utils.blacklist import BLACKLIST
-from utils.utils import DATABASE
+from utils.utils import PATH, DATABASE, JWT_SECRET_KEY
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATABASE['path']}"
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{PATH+DATABASE}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_SECRET_KEY"] = "DontTellAnyone" #only the application will know this string
+app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["JWT_BLACKLIST_ENABLED"] = True
 api = Api(app)
 jwt = JWTManager(app)

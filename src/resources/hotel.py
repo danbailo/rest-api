@@ -4,7 +4,7 @@ from models.hotel import HotelModel
 from models.site import SiteModel
 from resources.filters import normalize_path_params
 from resources.filters import query_off_city, query_on_city
-from utils.utils import DATABASE
+from utils.utils import PATH, DATABASE
 import traceback
 import sqlite3
 
@@ -22,7 +22,7 @@ path_params.add_argument("offset", type=int)
 class Hotels(Resource):
 	@staticmethod
 	def get():
-		conn = sqlite3.connect(DATABASE['path'])
+		conn = sqlite3.connect(PATH+DATABASE)
 		cursor = conn.cursor()
 
 		global path_params
